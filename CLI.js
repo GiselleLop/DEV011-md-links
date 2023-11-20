@@ -1,7 +1,60 @@
 const axios = require('axios');
 const { log } = require('console');
-const fs = require('fs').promises;
+const fs = require('fs').promises; 
+const fs1 = require('fs'); 
 const path = require('path');
+
+//"./Prueba_directorio"
+//funcion para leer directorio
+function readingDirectory(directory) {
+  filenames = fs1.readdirSync(directory); 
+    console.log("Directory filenames:");
+    //se crea un array de los archivos del directorio 
+    const arrayOfFiles = [];
+    filenames.forEach(file => {
+    //se une el directorio con el archivo
+    const absolutePath = path.join(directory, file);
+    // se agrega cada archivo al array creado
+    arrayOfFiles.push(absolutePath)
+    });
+    //filtrar solo los archivos md
+    const archivosMd = arrayOfFiles.filter(file => file.endsWith('.md'));
+   //ya filtrados los archivos md, se convierten de nuevo a string y por cada uno se convierte a ruta absoluta
+    archivosMd.forEach(archivo => {
+      convertPaths(archivo)
+      .then((file)=> {
+        console.log(file + "Se pudo acceder");
+        verifyFileMarckdown(archivo)
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    })
+
+}      
+/*
+    if (path.extname(file) == ".md") {
+      console.log("holaaaa " + absolutePath);
+     */
+
+
+// function validatePathOrDirectory(filePath) {
+//   fs.stat(filePath)
+//   .then(stats => {
+//     if (stats.isDirectory()) {
+//       console.log(`${filePath} es un directorio.`);
+//       readingDirectory(filePath)
+//       // Puedes agregar más lógica relacionada con directorios aquí si es necesario
+//     } else if (stats.isFile()) {
+//       console.log(`${filePath} es un archivo.`);
+//       return stats
+//     }
+    
+// }) 
+// .catch (err => {
+// console.log(err)
+// })
+// }
 
 //funcion para convertir una ruta relativa a absoluta
 function convertPaths(rutaRelativa) {
@@ -216,7 +269,8 @@ function arrayOfObjectForEveryLinkFound(data, validate, rutaAbsoluta) {
     // Utiliza Promise.all para esperar a que todas las promesas se resuelvan
     return Promise.all(arregloDePromesas)
       .then(arregloDeObjetos => {
-        console.log(arregloDeObjetos);
+     // mmnmmmmm   
+     console.log(arregloDeObjetos);
         // Resuelve la promesa con el arreglo de objetos
         return arregloDeObjetos;
       })
@@ -229,7 +283,10 @@ function arrayOfObjectForEveryLinkFound(data, validate, rutaAbsoluta) {
 }
 
 
+
+
   module.exports = { 
+    readingDirectory: readingDirectory,
     solicitudHTTPFetch: solicitudHTTPFetch,
     convertPaths: convertPaths,
     solicitudHTTP: solicitudHTTP,
@@ -237,5 +294,6 @@ function arrayOfObjectForEveryLinkFound(data, validate, rutaAbsoluta) {
     accessPath: accessPath,
     verifyFileMarckdown: verifyFileMarckdown,
     readFileMd: readFileMd,
+   // validatePathOrDirectory: validatePathOrDirectory,
     arrayOfObjectForEveryLinkFound: arrayOfObjectForEveryLinkFound,
-  };
+  }
