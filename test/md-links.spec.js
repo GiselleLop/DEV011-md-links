@@ -1,9 +1,7 @@
 const mdLinksModule = require('../index.js');
 const fs = require('fs').promises;
 const path = require('path');
-const { convertPaths, extractLinksFromFile, solicitudHTTP, accessPath, verifyFileMarckdown, readFileMd, arrayOfObjectForEveryLinkFound } = require('../CLI.js');
-
-
+const { readingDirectory, validatePathOrDirectory, convertPaths, extractLinksFromFile, solicitudHTTP, accessPath, verifyFileMarckdown, readFileMd, arrayOfObjectForEveryLinkFound } = require('../CLI.js');
 
 describe('mdLinks', () => {
   it('should replace relative path with absolute path ', () => {
@@ -13,6 +11,7 @@ describe('mdLinks', () => {
       expect(result).toEqual(path.resolve(filePath));
     });
   });
+
   it('should handle an invalid file path', () => {
     const mdLinksFunction = accessPath('./nonexistent.md');
     return mdLinksFunction.catch((error) => {
@@ -31,16 +30,69 @@ describe('mdLinks', () => {
     return expect(readFileMd('README.md')).resolves.toEqual(expect.any(String));
   });
   
-  
-  /*
-it('should return a resolved function', () => {
-      const mdLinksFunction = mdLinksModule().mdLinks('README.md', false);
-        return mdLinksFunction.then((result) => {
-          expect(result).toEqual(expect.any(Array));
-        });
-  });*/
+  it('Debería devolver un objeto con propiedades para cada link', () => {
+    const data = ['[Link1](http://example.com)', '[Link2](http://example2.com)'];
+    const validate = false;
+    const rutaAbsoluta = '/ruta/del/archivo.md';
 
+    return arrayOfObjectForEveryLinkFound(data, validate, rutaAbsoluta).then(result => {
+      expect(result).toBeInstanceOf(Array);
+      expect(result).toHaveLength(2);
+      result.forEach(obj => {
+        expect(obj).toHaveProperty('href');
+        expect(obj).toHaveProperty('texto');
+        expect(obj).toHaveProperty('file');
+      });
+    });
+  });
+
+  it('Debería devolver un objeto con propiedades (incluyendo status y ok) para cada link si validate es true', () => {
+    const data = ['[Link1](http://example.com)', '[Link2](http://example2.com)'];
+    const validate = true;
+    const rutaAbsoluta = '/ruta/del/archivo.md';
+
+    return arrayOfObjectForEveryLinkFound(data, validate, rutaAbsoluta).then(result => {
+      expect(result).toBeInstanceOf(Array);
+      expect(result).toHaveLength(2);
+
+      // Verifica que cada elemento en el array sea un objeto con propiedades específicas
+      result.forEach(obj => {
+        expect(obj).toHaveProperty('href');
+        expect(obj).toHaveProperty('texto');
+        expect(obj).toHaveProperty('file');
+        expect(obj).toHaveProperty('status');
+        expect(obj).toHaveProperty('ok');
+      });
+    });
+  });
+
+  it('Debería retornar una promesa resuelta si el argumento escrito es un directorio', () => {
+    const directoryPath = './Prueba_directorio';
+    return validatePathOrDirectory(directoryPath)
+      .then((result) => {
+        expect(result).toBe('es un directorio');
+      })
+      .catch((error) => {
+        // Manejar el error si es necesario
+        console.error(error);
+      });
+  })
+  it('Debería retornar una promesa resuelta si el argumento escrito es un archivo', () => {
+    const filePath = './README.md';
+    return validatePathOrDirectory(filePath)
+      .then((stats) => {
+        expect(stats.isFile()).toBe(true);
+      });
+  });
+  it('Debería leer exitosamente un directorio y retornar los archivos encontrados en un array.', () => {
+    const directoryPath = './Prueba_directorio';
+    return readingDirectory(directoryPath)
+      .then((file) => {
+        expect(Array.isArray(file)).toBe(true);
+      });
+  });
 });
+
 
 
 

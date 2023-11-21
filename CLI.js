@@ -6,10 +6,12 @@ const path = require('path');
 
 //"./Prueba_directorio"
 //funcion para leer directorio
+/*
 function readingDirectory(directory) {
-  filenames = fs1.readdirSync(directory); 
-    console.log("Directory filenames:");
-    //se crea un array de los archivos del directorio 
+  return new Promise((resolve, reject) => {
+    filenames = fs1.readdirSync(directory)
+    .then(()=> {
+     //se crea un array de los archivos del directorio 
     const arrayOfFiles = [];
     filenames.forEach(file => {
     //se une el directorio con el archivo
@@ -17,50 +19,68 @@ function readingDirectory(directory) {
     // se agrega cada archivo al array creado
     arrayOfFiles.push(absolutePath)
     });
-    //filtrar solo los archivos md
-    const archivosMd = arrayOfFiles.filter(file => file.endsWith('.md'));
-   //ya filtrados los archivos md, se convierten de nuevo a string y por cada uno se convierte a ruta absoluta
-    archivosMd.forEach(archivo => {
-      convertPaths(archivo)
-      .then((file)=> {
-        console.log(file + "Se pudo acceder");
-        verifyFileMarckdown(archivo)
+      //filtrar solo los archivos md
+      const archivosMd = arrayOfFiles.filter(file => file.endsWith('.md'));
+      return archivosMd;
+    })
+    .then((fileMd) => {
+      //ya filtrados los archivos md, se convierten de nuevo a string y por cada uno se convierte a ruta absoluta
+      fileMd.forEach(file => {
+      return convertPaths(file)
+    })
+    })
+    .then((fileConverted)=> {
+        console.log(fileConverted + "Se pudo acceder");
+        return verifyFileMarckdown(archivo)
+    })
+    .then((verifyFile)=> {
+    
+    })
+    .catch(err => {
+    reject(err)
+    })
+  })
+}  */    
+
+
+//"./Prueba_directorio"
+//funcion para leer directorio
+function readingDirectory(directory) {
+  return new Promise((resolve, reject) => {
+    fs.readdir(directory)
+      .then((directoryRead)=> {
+      resolve(directoryRead)
+    })
+    .catch(err => {
+    reject(err)
+    })
+  })
+}      
+
+
+function validatePathOrDirectory(filePath) {
+  return new Promise((resolve, reject) => {
+    fs.stat(filePath)
+      .then(stats => {
+        if (stats.isDirectory()) {
+          resolve('es un directorio');
+        } else if (stats.isFile()) {
+          resolve(stats);
+        } else {
+          reject(new Error('No es un archivo ni un directorio válido.'));
+        }
       })
       .catch(err => {
-        console.log(err);
-      })
-    })
-
-}      
-/*
-    if (path.extname(file) == ".md") {
-      console.log("holaaaa " + absolutePath);
-     */
-
-
-// function validatePathOrDirectory(filePath) {
-//   fs.stat(filePath)
-//   .then(stats => {
-//     if (stats.isDirectory()) {
-//       console.log(`${filePath} es un directorio.`);
-//       readingDirectory(filePath)
-//       // Puedes agregar más lógica relacionada con directorios aquí si es necesario
-//     } else if (stats.isFile()) {
-//       console.log(`${filePath} es un archivo.`);
-//       return stats
-//     }
-    
-// }) 
-// .catch (err => {
-// console.log(err)
-// })
-// }
+        reject(err);
+      });
+  });
+}
 
 //funcion para convertir una ruta relativa a absoluta
 function convertPaths(rutaRelativa) {
   return new Promise((resolve, reject) => {
     const rutaAbsoluta = path.resolve(rutaRelativa);
-    console.log(rutaAbsoluta);
+    // console.log(rutaAbsoluta);
 
     if (rutaAbsoluta) {
       resolve(rutaAbsoluta);
@@ -100,9 +120,8 @@ function verifyFileMarckdown(rutaAbsoluta) {
 function readFileMd(filePath) {
   return fs.readFile(filePath, 'utf8')
     .then(data => {
-     console.log(typeof data);
+     // console.log(typeof data);
       return Promise.resolve(data)
-
       // return "Se leyo el archivo md. exitosamente";
     })
     .catch(error => {
@@ -142,102 +161,20 @@ function solicitudHTTPFetch(link) {
   console.log(error);
   })
 }
-/*
-// Funcion para crear el array de objetos(cada objeto representa un link)
-function arrayOfObjectForEveryLinkFound(data, validate, rutaAbsoluta) {
-  if (validate === false || validate === undefined ) {
-    // Crear un arreglo de objetos con la información de los enlaces
-    const arregloDeObjetos = data.map(enlace => {
-      const match = enlace.match(/\[(.*?)\]\((.*?)\)/);
-      return {
-        href: match[2], // Suponiendo que el enlace es la URL
-        texto: match[1], // Puedes modificar esto según tus necesidades
-        file: rutaAbsoluta// Usa la ruta original, no la relativa
-      };
-    });
-    console.log(arregloDeObjetos);
-    return arregloDeObjetos;
-  } else if (validate === true) {
-    const arregloDeObjetos = data.map(enlace => {
-    const match = enlace.match(/\[(.*?)\]\((.*?)\)/);
-    solicitudHTTP('https://developer.mozilla.org/es/docs/Web/JavaScript/Guide/Regular_expressions',)
-    .then(res => {
-      console.log(res);
-      return res
-    })
-    .catch (err => {
-    console.log(err);
-    })
-
-      return {
-        href: match[2], // Suponiendo que el enlace es la URL
-        texto: match[1], // Puedes modificar esto según tus necesidades
-        file: rutaAbsoluta,  // Usa la ruta original, no la relativa
-        status: solicitud,
-        ok: 'fail or ok'
-        };                
-    });
-    
-    console.log(arregloDeObjetos);
-      // Resuelve la promesa con el arreglo de objetos
-    return arregloDeObjetos;
-    }
-}*/
-
-/*
-// Funcion para crear el array de objetos(cada objeto representa un link)
-function arrayOfObjectForEveryLinkFound(data, validate, rutaAbsoluta) {
-  if (validate === false || validate === undefined ) {
-    // Crear un arreglo de objetos con la información de los enlaces
-    const arregloDeObjetos = data.map(enlace => {
-      const match = enlace.match(/\[(.*?)\]\((.*?)\)/);
-      return {
-        href: match[2], // Suponiendo que el enlace es la URL
-        texto: match[1], // Puedes modificar esto según tus necesidades
-        file: rutaAbsoluta// Usa la ruta original, no la relativa
-      };
-    });
-    console.log(arregloDeObjetos);
-    return arregloDeObjetos;
-  } else if (validate === true) {
-    // Crear un arreglo de objetos con la información de los enlaces
-    solicitudHTTP('https://developer.mozilla.org/es/docs/Web/JavaScript/Guide/Regular_expressions')
-    .then(res => {
-      const arregloDeObjetos = data.map(enlace => {
-      const match = enlace.match(/\[(.*?)\]\((.*?)\)/);
-      let objectLinks = {
-        href: match[2], // Suponiendo que el enlace es la URL
-        texto: match[1], // Puedes modificar esto según tus necesidades
-        file: rutaAbsoluta,// Usa la ruta original, no la relativa 
-        status: res,
-      };
-      return objectLinks
-    });
-    console.log(arregloDeObjetos);
-    return arregloDeObjetos;
-    })
-    .catch (err => {
-    console.log(err);
-    })   
-    
-     
-    }
-}*/
 
 // Funcion para crear el array de objetos(cada objeto representa un link)
 function arrayOfObjectForEveryLinkFound(data, validate, rutaAbsoluta) {
   if (validate === false || validate === undefined) {
     // Crear un arreglo de objetos con la información de los enlaces
-    const arregloDeObjetos = data.map(enlace => {
+     const arregloDeObjetos = data.map(enlace => {
       const match = enlace.match(/\[(.*?)\]\((.*?)\)/);
       return {
         href: match[2],
         texto: match[1],
         file: rutaAbsoluta
       };
-    });
-    //console.log(arregloDeObjetos);
-    return arregloDeObjetos;
+    })
+    return Promise.resolve(arregloDeObjetos);
   } else if (validate === true) {
     // Crear un arreglo de promesas para las solicitudes HTTP
     const arregloDePromesas = data.map(enlace => {
@@ -269,10 +206,10 @@ function arrayOfObjectForEveryLinkFound(data, validate, rutaAbsoluta) {
     // Utiliza Promise.all para esperar a que todas las promesas se resuelvan
     return Promise.all(arregloDePromesas)
       .then(arregloDeObjetos => {
-     // mmnmmmmm   
-     console.log(arregloDeObjetos);
+        //////
+        console.log(arregloDeObjetos);
         // Resuelve la promesa con el arreglo de objetos
-        return arregloDeObjetos;
+        return Promise.resolve(arregloDeObjetos);
       })
       .catch(error => {
         console.error('Error al procesar promesas:', error);
@@ -281,9 +218,6 @@ function arrayOfObjectForEveryLinkFound(data, validate, rutaAbsoluta) {
       });
   }
 }
-
-
-
 
   module.exports = { 
     readingDirectory: readingDirectory,
@@ -294,6 +228,6 @@ function arrayOfObjectForEveryLinkFound(data, validate, rutaAbsoluta) {
     accessPath: accessPath,
     verifyFileMarckdown: verifyFileMarckdown,
     readFileMd: readFileMd,
-   // validatePathOrDirectory: validatePathOrDirectory,
     arrayOfObjectForEveryLinkFound: arrayOfObjectForEveryLinkFound,
+    validatePathOrDirectory: validatePathOrDirectory,
   }

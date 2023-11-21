@@ -6,5 +6,5 @@ const { validatePathOrDirectory, readingDirectory, convertPaths, extractLinksFro
 const mdLinksFunction = mdLinksModule().mdLinks;
 mdLinksFunction("README.md", true)
 
-// readingDirectory("./Prueba_directorio");
+readingDirectory("./Prueba_directorio");
 //validatePathOrDirectory("./Prueba_directorio")

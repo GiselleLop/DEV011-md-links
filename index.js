@@ -90,6 +90,7 @@ module.exports = () => {
 
 module.exports = () => {
   function mdLinks(filePath, validate) {
+  
     // se valida si es directorio o archivo
     fs.stat(filePath)
       .then((stats) => {
@@ -115,7 +116,7 @@ module.exports = () => {
             archivosMd.forEach((archivo) => {
               //
               let rutaArchivoMD;
-              convertPaths(archivo)
+             return convertPaths(archivo)
             .then((ruta) => {
               console.log("Ruta absoluta:", ruta);
               rutaArchivoMD = ruta;
@@ -149,31 +150,31 @@ module.exports = () => {
             });
             });
           }
-          readingDirectory(filePath)
+         return readingDirectory(filePath)
+         
         } else if (stats.isFile()) {
-          console.log(`${filePath} es un archivo.`);
-
+         // console.log(filePath + 'es un archivo.');
           let rutaAbsoluta;
           convertPaths(filePath)
             .then((ruta) => {
-              console.log("Ruta absoluta:", ruta);
               rutaAbsoluta = ruta;
+              // console.log("Ruta absoluta:", ruta);
               return accessPath(ruta); // Comprueba si la ruta existe en el ordenador
             })
             .then((ruta) => {
-              console.log(`La ruta ${ruta} existe.`);
+              // console.log(`La ruta ${ruta} existe.`);
               return verifyFileMarckdown(ruta);
             })
             .then((rutaAbsoluta) => {
-              console.log("El archivo tiene una extensión permitida.");
+             //  console.log("El archivo tiene una extensión permitida.");
               return readFileMd(rutaAbsoluta);
             })
             .then((data) => {
-              console.log("El archivo se leyo exitosamente.");
+              // console.log("El archivo se leyo exitosamente.");
               return extractLinksFromFile(data);
             })
             .then((file) => {
-              console.log("se extrajeron los links del archivo");
+              // console.log("se extrajeron los links del archivo");
               return arrayOfObjectForEveryLinkFound(
                 file,
                 validate,
@@ -181,7 +182,7 @@ module.exports = () => {
               );
             })
             .then(() => {
-              console.log("array creado correctamente");
+              // console.log("array creado correctamente");
             })
             .catch((error) => {
               console.error(`Error: ${error}`);
