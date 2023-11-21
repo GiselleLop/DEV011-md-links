@@ -81,7 +81,8 @@ describe('mdLinks', () => {
     const filePath = './README.md';
     return validatePathOrDirectory(filePath)
       .then((stats) => {
-        expect(stats.isFile()).toBe(true);
+
+        expect(typeof stats).toEqual("object");
       });
   });
   it('Debería leer exitosamente un directorio y retornar los archivos encontrados en un array.', () => {

@@ -6,11 +6,12 @@ const path = require('path');
 
 //"./Prueba_directorio"
 //funcion para leer directorio
-/*
+
 function readingDirectory(directory) {
+  
   return new Promise((resolve, reject) => {
-    filenames = fs1.readdirSync(directory)
-    .then(()=> {
+    fs.readdir(directory)
+    .then((filenames)=> {
      //se crea un array de los archivos del directorio 
     const arrayOfFiles = [];
     filenames.forEach(file => {
@@ -21,41 +22,31 @@ function readingDirectory(directory) {
     });
       //filtrar solo los archivos md
       const archivosMd = arrayOfFiles.filter(file => file.endsWith('.md'));
-      return archivosMd;
-    })
-    .then((fileMd) => {
       //ya filtrados los archivos md, se convierten de nuevo a string y por cada uno se convierte a ruta absoluta
-      fileMd.forEach(file => {
-      return convertPaths(file)
-    })
-    })
-    .then((fileConverted)=> {
-        console.log(fileConverted + "Se pudo acceder");
-        return verifyFileMarckdown(archivo)
-    })
-    .then((verifyFile)=> {
-    
-    })
-    .catch(err => {
+     // archivosMd.forEach(file => {
+     console.log(archivosMd + "FUNCION READING");
+      resolve(archivosMd)
+    //})
+  })
+  .catch(err => {
     reject(err)
     })
-  })
-}  */    
+})
+}
 
-
-//"./Prueba_directorio"
-//funcion para leer directorio
-function readingDirectory(directory) {
-  return new Promise((resolve, reject) => {
-    fs.readdir(directory)
-      .then((directoryRead)=> {
-      resolve(directoryRead)
-    })
-    .catch(err => {
-    reject(err)
-    })
-  })
-}      
+// //"./Prueba_directorio"
+// //funcion para leer directorio
+// function readingDirectory(directory) {
+//   return new Promise((resolve, reject) => {
+//     fs.readdir(directory)
+//       .then((directoryRead)=> {
+//       resolve(directoryRead)
+//     })
+//     .catch(err => {
+//     reject(err)
+//     })
+//   })
+// }      
 
 
 function validatePathOrDirectory(filePath) {
@@ -63,9 +54,9 @@ function validatePathOrDirectory(filePath) {
     fs.stat(filePath)
       .then(stats => {
         if (stats.isDirectory()) {
-          resolve('es un directorio');
+          resolve( {type: 'directory', name: filePath});
         } else if (stats.isFile()) {
-          resolve(stats);
+          resolve({type: 'file', name: filePath});
         } else {
           reject(new Error('No es un archivo ni un directorio válido.'));
         }
@@ -77,10 +68,15 @@ function validatePathOrDirectory(filePath) {
 }
 
 //funcion para convertir una ruta relativa a absoluta
+//funcion para convertir una ruta relativa a absoluta
 function convertPaths(rutaRelativa) {
   return new Promise((resolve, reject) => {
+    if (typeof rutaRelativa !== 'string') {
+      reject(new Error('La ruta relativa debe ser de tipo string.'));
+      return;
+    }
+
     const rutaAbsoluta = path.resolve(rutaRelativa);
-    // console.log(rutaAbsoluta);
 
     if (rutaAbsoluta) {
       resolve(rutaAbsoluta);
@@ -134,7 +130,6 @@ function extractLinksFromFile(data) {
   return new Promise((resolve, reject) => {
     const links = data.match(/\[.*?\]\((.*?)\)/g) || [];
     if (links) {
-      // console.log(links);
       resolve(links);
     } else {
       reject(new Error('No se encontraron enlaces en el archivo.'));
@@ -164,7 +159,9 @@ function solicitudHTTPFetch(link) {
 
 // Funcion para crear el array de objetos(cada objeto representa un link)
 function arrayOfObjectForEveryLinkFound(data, validate, rutaAbsoluta) {
+
   if (validate === false || validate === undefined) {
+    console.log(`arrayOfObjectForEveryLinkFound llamada para ${rutaAbsoluta}`);
     // Crear un arreglo de objetos con la información de los enlaces
      const arregloDeObjetos = data.map(enlace => {
       const match = enlace.match(/\[(.*?)\]\((.*?)\)/);
