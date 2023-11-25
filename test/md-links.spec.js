@@ -1,7 +1,7 @@
-const mdLinksModule = require('../index.js');
+const mdLinksModule = require('../CLI.js');
 const fs = require('fs').promises;
 const path = require('path');
-const { readingDirectory, validatePathOrDirectory, convertPaths, extractLinksFromFile, solicitudHTTP, accessPath, verifyFileMarckdown, readFileMd, arrayOfObjectForEveryLinkFound } = require('../CLI.js');
+const { readingDirectory, validatePathOrDirectory, convertPaths, extractLinksFromFile, solicitudHTTP, accessPath, verifyFileMarckdown, readFileMd, arrayOfObjectForEveryLinkFound } = require('../index.js');
 
 describe('mdLinks', () => {
   it('should replace relative path with absolute path ', () => {

@@ -1,6 +1,7 @@
 {
-  "name": "md-links",
-  "version": "0.1.0",
+  "name": "md-links-giselle",
+  "version": "0.2.0",
+  "main": "index.js",
   "engines": {
     "node": ">=16.x"
   },
@@ -17,10 +18,28 @@
     "file-url": "^4.0.0",
     "markdown-it": "^13.0.2",
     "marked": "^10.0.0",
-    "node": "^21.1.0",
     "node-fetch": "^2.7.0"
   },
+
   "devDependencies": {
     "jest": "^29.7.0"
-  }
+  },
+  "description": "* [1. Preámbulo](#1-preámbulo)\r * [2. Resumen del proyecto](#2-resumen-del-proyecto)\r * [3. Objetivos de aprendizaje](#3-objetivos-de-aprendizaje)\r * [4. Consideraciones generales](#4-consideraciones-generales)\r * [5. Consideraciones técnicas](#5-consideraciones-técnicas)\r * [6. Hitos](#6-hitos)\r * [7. Hacker edition](#7-hacker-edition)\r * [8. Pistas, tips y lecturas complementarias](#8-pistas-tips-y-lecturas-complementarias)\r * [9. Para pedir project feedback](#9-para-pedir-project-feedback)",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GiselleLop/DEV011-md-links.git"
+  },
+  "author": "Giselle Lopez",
+  "license": "ISC",
+  "bin": {
+    "mdLinks" : "CLI.js"
+  },
+  "bugs": {
+    "url": "https://github.com/GiselleLop/DEV011-md-links/issues"
+  },
+  "homepage": "https://github.com/GiselleLop/DEV011-md-links#readme"
 }
