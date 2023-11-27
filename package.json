@@ -1,6 +1,6 @@
 {
   "name": "md-links-giselle",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "index.js",
   "engines": {
     "node": ">=16.x"
@@ -15,12 +15,12 @@
   },
   "dependencies": {
     "axios": "^1.6.1",
+    "chalk": "^5.3.0",
     "file-url": "^4.0.0",
     "markdown-it": "^13.0.2",
     "marked": "^10.0.0",
     "node-fetch": "^2.7.0"
   },
-
   "devDependencies": {
     "jest": "^29.7.0"
   },
@@ -36,7 +36,7 @@
   "author": "Giselle Lopez",
   "license": "ISC",
   "bin": {
-    "mdLinks" : "CLI.js"
+    "mdLinks": "CLI.js"
   },
   "bugs": {
     "url": "https://github.com/GiselleLop/DEV011-md-links/issues"

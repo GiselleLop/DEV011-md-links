@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 const fs = require("fs").promises;
 const fs1 = require('fs'); 
@@ -16,7 +15,7 @@ const {
 
 module.exports = () => {
   function mdLinks(filePath, validate) {
-  return new Promise((resolve, reject) => {
+   return new Promise((resolve, reject) => {
      let rutaAbsoluta;
       validatePathOrDirectory(filePath)
       .then((result)=> {
@@ -33,26 +32,19 @@ module.exports = () => {
         if(typeof result === "string") {
           return convertPaths(result)    
           .then((ruta) => {
-            // console.log("RUTA RUTA " + ruta);
             rutaAbsoluta = ruta;
-             // console.log("Ruta absoluta:", ruta);
-              return accessPath(ruta); // Comprueba si la ruta existe en el ordenador
+              return accessPath(ruta);
             })
             .then((ruta) => {
-              // console.log(`La ruta ${ruta} existe.`);
               return verifyFileMarckdown(ruta);
             })
             .then((rutaAbsoluta) => {
-             // console.log("El archivo tiene una extensión permitida.");
               return readFileMd(rutaAbsoluta);
             })
             .then((data) => {
-              // console.log("El archivo se leyo exitosamente.");
               return extractLinksFromFile(data);
             })
             .then((file) => {
-              // console.log("se extrajeron los links del archivo");
-              // console.log(file);
               return arrayOfObjectForEveryLinkFound(
                 file,
                 validate,
@@ -67,55 +59,79 @@ module.exports = () => {
               reject(error)
             });
         }
-        else{
+        else if (typeof result === 'object'){
           const arr =  Object.values(result);
-          arr.forEach((ell)=> {
+          /*arr.forEach((ell)=> {
+
           // console.log("FOREACH "+ ell);
-          // console.log( convertPaths(ell));
-          return convertPaths(ell)     
-        .then((ruta) => {
-         // console.log("Ruta absoluta:", ruta);
-          return accessPath(ruta); // Comprueba si la ruta existe en el ordenador
-        })
-        .then((ruta) => {
+           //console.log( convertPaths(ell));
+          convertPaths(ell)     
+           .then((ruta) => {
+          // console.log("Ruta absoluta:", ruta);
+            return accessPath(ruta); // Comprueba si la ruta existe en el ordenador
+          })
+          .then((ruta) => {
           // console.log(`La ruta ${ruta} existe.`);
           return verifyFileMarckdown(ruta);
-        })
-        .then((rutaAbsoluta2) => {
-         // console.log("El archivo tiene una extensión permitida.");
+          })
+          .then((rutaAbsoluta2) => {
+           // console.log("El archivo tiene una extensión permitida." + rutaAbsoluta2);
           return readFileMd(rutaAbsoluta2);
-        })
-        .then((data) => {
-         // console.log("El archivo se leyo exitosamente.");
-          return extractLinksFromFile(data);
-        })
-        .then((file) => {
-         // console.log("se extrajeron los links del archivo");
-          //console.log(file);
-          return arrayOfObjectForEveryLinkFound(
-            file,
-            validate,
-            ell
-          );
-        })
+          })
+          .then((data) => {
+           // console.log("El archivo se leyo exitosamente.");
+           return extractLinksFromFile(data);
+          })
+          .then((fileFound) => {
+          return arrayOfObjectForEveryLinkFound(fileFound, validate, ell);
+          })
         .then((arrayLinks) => {
-          resolve(arrayLinks)
-          console.log("array creado correctamente");
+          //console.log(arrayLinks);
+          resolve(arrayLinks) 
         })
-        .catch((error) => {
+         .catch((error) => {
           reject(error)
         });
-          })
+          })*/
+          
+          Promise.all([arr.map((ell)=> {
+              convertPaths(ell)     
+               .then((ruta) => {
+                return accessPath(ruta); 
+              })
+              .then((ruta) => {
+              // console.log(`La ruta ${ruta} existe.`);
+              return verifyFileMarckdown(ruta);
+              })
+              .then((rutaAbsoluta2) => {
+               // console.log("El archivo tiene una extensión permitida." + rutaAbsoluta2);
+              return readFileMd(rutaAbsoluta2);
+              })
+              .then((data) => {
+               // console.log("El archivo se leyo exitosamente.");
+               return extractLinksFromFile(data);
+              })
+              .then((fileFound) => {
+              return arrayOfObjectForEveryLinkFound(fileFound, validate, ell);
+              })
+            .then((arrayLinks) => {
+             // console.log(arrayLinks);
+             return resolve(arrayLinks)
+              //resolve(arrayLinks)
+            })
+             .catch((error) => {
+              reject(error)
+            });
+          })])
         }
+
       })
 
   })
 };
+
+
 return {
   mdLinks: mdLinks,
 };
-}
-
-exports.printMsg = function() {
-  console.log("This is a message from the demo package");
 }

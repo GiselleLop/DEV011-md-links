@@ -24,7 +24,7 @@ function readingDirectory(directory) {
       const archivosMd = arrayOfFiles.filter(file => file.endsWith('.md'));
       //ya filtrados los archivos md, se convierten de nuevo a string y por cada uno se convierte a ruta absoluta
      // archivosMd.forEach(file => {
-     // console.log(archivosMd + "FUNCION READING");
+      console.log(archivosMd + "FUNCION READING");
       resolve(archivosMd)
     //})
   })
@@ -200,11 +200,11 @@ function arrayOfObjectForEveryLinkFound(data, validate, rutaAbsoluta) {
         });
     });
 
-    // Utiliza Promise.all para esperar a que todas las promesas se resuelvan
+    //Esperar a que todas las promesas se resuelvan
     return Promise.all(arregloDePromesas)
       .then(arregloDeObjetos => {
         //////
-       console.log(arregloDeObjetos);
+       // console.log(arregloDeObjetos);
         // Resuelve la promesa con el arreglo de objetos
         return Promise.resolve(arregloDeObjetos);
       })
