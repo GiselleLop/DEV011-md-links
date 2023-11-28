@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 const process = require('process'); 
 const mdLinksModule = require('./index.js');
 const args = process.argv; 
@@ -7,7 +6,7 @@ const path = args[2];
 const validate = args.includes('-v', '--validate');
 const stats = args.includes('-s', '--stats')
 console.log(process.argv);
-const mdLinksFunction = mdLinksModule().mdLinks;
+ const mdLinksFunction = mdLinksModule().mdLinks;
 
   if(validate === false && stats === false) {
     mdLinksFunction(path, false)
@@ -44,37 +43,15 @@ const mdLinksFunction = mdLinksModule().mdLinks;
      console.log('Repeated: ' + duplicates.length);
     })
     .catch (console.error);
-
   }
 
-
-
-// mdLinksFunction(path, validate)
+//------
+// const mdLinksFunction = mdLinksModule().mdLinks;
+// mdLinksFunction(path, true)
 // .then(links => {
-//   console.log(links);
+//   //console.log(links);
 //   // for (let i=0; i<links.length; i++) {
 //   //   console.log(links[i].file + '  ' + links[i].href + '  ' + links[i].texto ) ;
 //   // }
 // })
 // .catch(console.error);
-
-
-/*
-const mdLinksModule = require('./index.js');
-
-const [, , file, validate] = process.argv;
-console.log(process.argv);
-
-const isValidateTrue = validate === "true";
-
-const mdLinksFunction = mdLinksModule().mdLinks;
-
-return mdLinksFunction(file, isValidateTrue)
-  .then(res => {
-    console.log(res);
-  })
-  .catch(err => {
-    console.log(err);
-  });
-
-*/
