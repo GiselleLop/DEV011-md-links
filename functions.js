@@ -40,8 +40,10 @@ function convertPaths(rutaRelativa) {
 
 //funcion para comprobar si la ruta existe en el ordenador
 function accessPath(rutaAbsoluta) {
-  fs.access(rutaAbsoluta)
-  return rutaAbsoluta
+
+    fs.access(rutaAbsoluta)
+    return rutaAbsoluta
+  
 }
 
 // Funcion para saber si el archivo existente es de tipo md.

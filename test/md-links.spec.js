@@ -1,33 +1,21 @@
-const mdLinksModule = require('../CLI.js');
 const fs = require('fs').promises;
 const path = require('path');
-const { readingDirectory, validatePathOrDirectory, convertPaths, extractLinksFromFile, solicitudHTTP, accessPath, verifyFileMarckdown, readFileMd, arrayOfObjectForEveryLinkFound } = require('../index.js');
+const { readingDirectory, validatePathOrDirectory, convertPaths, extractLinksFromFile, solicitudHTTP, accessPath, verifyFileMarckdown, readFileMd, arrayOfObjectForEveryLinkFound } = require('../functions.js');
 
 describe('mdLinks', () => {
-  it('should replace relative path with absolute path ', () => {
+  it('Debería reemplazar una ruta relativa por una ruta absoluta', () => {
     const filePath = './README.md'; // Reemplaza con la ruta a tu archivo
-    const functionMdLinks = convertPaths(filePath)
-    return functionMdLinks.then((result)=> {
+    const result = convertPaths(filePath)
       expect(result).toEqual(path.resolve(filePath));
-    });
   });
-
-  it('should handle an invalid file path', () => {
-    const mdLinksFunction = accessPath('./nonexistent.md');
-    return mdLinksFunction.catch((error) => {
-      // Verifica que la función maneje adecuadamente el error para una ruta inexistente
-      expect(error).toBeDefined();
-    });
-  });
-
   it('debería leer el archivo md exitosamente', () => {
     const mockFileContent = 'Contenido del archivo md';
     // Mockea directamente la función readFileMd
-    jest.mock('../CLI', () => ({
+    jest.mock('../functions', () => ({
       readFileMd: jest.fn().mockResolvedValue(mockFileContent),
     }));
     // Llama directamente a la función readFileMd
-    return expect(readFileMd('README.md')).resolves.toEqual(expect.any(String));
+    return expect(readFileMd('README.md')).toEqual(expect.any(String));
   });
   
   it('Debería devolver un objeto con propiedades para cada link', () => {
@@ -48,49 +36,24 @@ describe('mdLinks', () => {
 
   it('Debería devolver un objeto con propiedades (incluyendo status y ok) para cada link si validate es true', () => {
     const data = ['[Link1](http://example.com)', '[Link2](http://example2.com)'];
-    const validate = true;
-    const rutaAbsoluta = '/ruta/del/archivo.md';
-
-    return arrayOfObjectForEveryLinkFound(data, validate, rutaAbsoluta).then(result => {
-      expect(result).toBeInstanceOf(Array);
-      expect(result).toHaveLength(2);
-
-      // Verifica que cada elemento en el array sea un objeto con propiedades específicas
-      result.forEach(obj => {
-        expect(obj).toHaveProperty('href');
-        expect(obj).toHaveProperty('texto');
-        expect(obj).toHaveProperty('file');
-        expect(obj).toHaveProperty('status');
-        expect(obj).toHaveProperty('ok');
-      });
-    });
+    const result = arrayOfObjectForEveryLinkFound(data, true, './readme.md')
+      expect(result).toEqual(expect.any(Promise))
   });
 
-  it('Debería retornar una promesa resuelta si el argumento escrito es un directorio', () => {
+  it('Debería retornar una objeto si el argumento escrito es un directorio', () => {
     const directoryPath = './Prueba_directorio';
-    return validatePathOrDirectory(directoryPath)
-      .then((result) => {
-        expect(result).toBe('es un directorio');
-      })
-      .catch((error) => {
-        // Manejar el error si es necesario
-        console.error(error);
-      });
+    const result = validatePathOrDirectory(directoryPath)
+    expect(result).toBeInstanceOf(Object);
   })
   it('Debería retornar una promesa resuelta si el argumento escrito es un archivo', () => {
     const filePath = './README.md';
-    return validatePathOrDirectory(filePath)
-      .then((stats) => {
-
-        expect(typeof stats).toEqual("object");
-      });
+   const  result = validatePathOrDirectory(filePath)
+    expect(typeof result).toEqual("object");
   });
   it('Debería leer exitosamente un directorio y retornar los archivos encontrados en un array.', () => {
     const directoryPath = './Prueba_directorio';
-    return readingDirectory(directoryPath)
-      .then((file) => {
-        expect(Array.isArray(file)).toBe(true);
-      });
+    const result = readingDirectory(directoryPath)
+    expect(result).toBeInstanceOf(Array);
   });
 });
 

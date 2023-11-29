@@ -17,6 +17,30 @@ console.log(process.argv);
    })
    .catch (console.error);
   }
+  else if (validate && stats) {
+    mdLinksFunction(path, true)
+    .then(links => {
+      let uniques = [];
+      let duplicates = [];
+      let broken = []
+      for (let i=0; i<links.length; i++) {
+        if(links[i].status === 'Error') {
+        broken.push(links[i].status)
+        uniques.push(links[i].href)
+        }
+        else if (!uniques.includes(links[i].href)){
+        uniques.push(links[i].href)
+        } else if (uniques.includes(links[i].href)) {
+        duplicates.push(links[i].href)
+        } 
+      }
+     console.log('Total: ' + links.length);
+     console.log('Uniques:   ' + uniques.length);
+     console.log('Repeated: ' + duplicates.length);
+     console.log('Broken: ' + broken.length);
+    })
+    .catch (console.error);
+    }
   else if(validate) {
     mdLinksFunction(path, true)
     .then(links => {
@@ -44,6 +68,7 @@ console.log(process.argv);
     })
     .catch (console.error);
   }
+
 
 //------
 // const mdLinksFunction = mdLinksModule().mdLinks;

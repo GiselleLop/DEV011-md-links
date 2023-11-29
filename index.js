@@ -35,7 +35,6 @@ module.exports = () => {
               return extractLinksFromFile(data);
             })
             .then((file) => {
-              //console.log(file);
               return arrayOfObjectForEveryLinkFound(
                 file,
                 validate,
